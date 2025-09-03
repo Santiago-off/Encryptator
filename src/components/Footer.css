@@ -1,0 +1,17 @@
+.app-footer {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--dark-navy);
+  color: var(--slate);
+  font-size: 0.9rem;
+}
+
+.app-footer a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.app-footer a:hover {
+  color: var(--white);
+}

@@ -1,35 +1,26 @@
 import { useState } from 'react';
 import './App.css';
-import Muñeco from './assets/Muñeco.svg'; // Asegúrate de tener esta imagen en src/assets/
+import Header from './components/Header';
+import Footer from './components/Footer';
+import InputSection from './components/InputSection';
+import OutputSection from './components/OutputSection';
+import { encryptText, decryptText } from './utils/encryption';
 
 function App() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
-
-  const encryptionMap = {
-    'e': 'enter',
-    'i': 'imes',
-    'a': 'ai',
-    'o': 'ober',
-    'u': 'ufat'
-  };
+  const [encryptionKey, setEncryptionKey] = useState(''); // Estado para la clave
 
   const handleEncrypt = () => {
     if (!inputText.trim()) {
       alert("El campo de texto está vacío.");
       return;
     }
-    if (/[^a-z\s]/.test(inputText)) {
-      alert("Por favor, ingresa solo letras minúsculas y sin acentos.");
-      return;
+    // Pasamos el texto y la clave a la función de encriptar
+    const encrypted = encryptText(inputText, encryptionKey);
+    if (encrypted !== null) {
+      setOutputText(encrypted);
     }
-
-    const encryptedText = inputText
-      .split('')
-      .map(char => encryptionMap[char] || char)
-      .join('');
-    
-    setOutputText(encryptedText);
   };
 
   const handleDecrypt = () => {
@@ -37,76 +28,43 @@ function App() {
       alert("El campo de texto está vacío.");
       return;
     }
-    
-    let decryptedText = inputText;
-    
-    for (const key in encryptionMap) {
-      const value = encryptionMap[key];
-      decryptedText = decryptedText.replaceAll(value, key);
+    // Pasamos el texto y la clave a la función de desencriptar
+    const decrypted = decryptText(inputText, encryptionKey);
+    if (decrypted !== null) {
+      setOutputText(decrypted);
     }
-
-    setOutputText(decryptedText);
   };
 
   const handleCopy = () => {
+    if (!outputText) return;
     navigator.clipboard.writeText(outputText)
       .then(() => {
         alert("¡Texto copiado al portapapeles!");
       })
       .catch(err => {
         console.error('Error al copiar el texto: ', err);
+        alert("Error al copiar el texto.");
       });
   };
 
   return (
     <div className="app-container">
-      <header className="app-header">
-        <h1>Encriptador de Texto</h1>
-      </header>
+      <Header />
       <main className="app-main">
-        <div className="text-area-container">
-          <textarea
-            className="text-area"
-            placeholder="Ingresa el texto aquí..."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-          <div className="info-text">
-            <p>⚠️ Solo letras minúsculas y sin acentos.</p>
-          </div>
-          <div className="button-container">
-            <button className="action-button encrypt-button" onClick={handleEncrypt}>
-              Encriptar
-            </button>
-            <button className="action-button decrypt-button" onClick={handleDecrypt}>
-              Desencriptar
-            </button>
-          </div>
-        </div>
-        <div className="output-container">
-          {outputText ? (
-            <div className="result-container">
-              <textarea
-                className="text-area"
-                value={outputText}
-                readOnly
-              />
-              <button className="action-button copy-button" onClick={handleCopy}>
-                Copiar
-              </button>
-            </div>
-          ) : (
-            <div className="placeholder-container">
-              <img src={Muñeco} alt="Ilustración de persona con lupa" className="placeholder-image" />
-              <h2>Ningún mensaje fue encontrado</h2>
-              <p>Ingresa el texto que desees encriptar o desencriptar.</p>
-            </div>
-          )}
-        </div>
+        <InputSection 
+          inputText={inputText}
+          setInputText={setInputText}
+          encryptionKey={encryptionKey}
+          setEncryptionKey={setEncryptionKey}
+          onEncrypt={handleEncrypt}
+          onDecrypt={handleDecrypt}
+        />
+        <OutputSection 
+          outputText={outputText}
+          onCopy={handleCopy}
+        />
       </main>
-      <footer className="app-footer">
-        <p>Creado con ❤️ por White</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

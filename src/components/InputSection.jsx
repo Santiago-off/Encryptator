@@ -1,27 +1,49 @@
 import React from 'react';
+import './InputSection.css';
 
-function InputSection({ inputText, setInputText, onEncrypt, onDecrypt }) {
+const InputSection = ({ 
+  inputText, 
+  setInputText, 
+  encryptionKey, 
+  setEncryptionKey, 
+  onEncrypt, 
+  onDecrypt 
+}) => {
   return (
-    <div className="text-area-container">
+    <section className="input-section">
       <textarea
-        className="text-area"
-        placeholder="Ingresa el texto aquí..."
+        className="input-textarea"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
+        placeholder="Ingrese el texto aquí..."
       />
-      <div className="info-text">
-        <p>⚠️ Solo letras minúsculas y sin acentos.</p>
+      
+      <div className="key-input-container">
+        <label htmlFor="encryptionKey">Clave Secreta:</label>
+        <input
+          id="encryptionKey"
+          type="password"
+          className="key-input"
+          value={encryptionKey}
+          onChange={(e) => setEncryptionKey(e.target.value.toLowerCase().replace(/[^a-z]/g, ''))}
+          placeholder="Ingrese la clave (solo letras)"
+        />
       </div>
-      <div className="button-container">
-        <button className="action-button encrypt-button" onClick={onEncrypt}>
-          Encriptar
-        </button>
-        <button className="action-button decrypt-button" onClick={onDecrypt}>
-          Desencriptar
-        </button>
+
+      <div className="input-actions">
+        <p className="warning">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+          </svg>
+          Solo letras minúsculas y sin acentos.
+        </p>
+        <div className="button-group">
+          <button className="btn btn-primary" onClick={onEncrypt}>Encriptar</button>
+          <button className="btn btn-secondary" onClick={onDecrypt}>Desencriptar</button>
+        </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
 
 export default InputSection;
