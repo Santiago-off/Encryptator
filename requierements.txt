@@ -1,0 +1,20 @@
+# Dependencias del Proyecto (Node.js - gestionadas con npm)
+
+## Dependencias de Producción
+- react
+- react-dom
+
+## Dependencias de Desarrollo
+- @types/react
+- @types/react-dom
+- @vitejs/plugin-react
+- eslint
+- eslint-plugin-react
+- eslint-plugin-react-hooks
+- eslint-plugin-react-refresh
+- vite
+
+# Para instalar todas las dependencias, ejecuta el siguiente comando en tu terminal:
+# npm install
+#
+# O simplemente ejecuta el script start_app.bat
