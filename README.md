@@ -65,7 +65,7 @@ JavaScript	Lógica de cifrado
 
 ▶️ Instalación y uso
 
-git clone https://github.com/tuusuario/Encryptador.git
+git clone https://github.com/Santiago-off/Encryptator.git
 
 cd Encryptador
 
