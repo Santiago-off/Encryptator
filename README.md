@@ -1,52 +1,76 @@
 🔐 Encryptador
+<p align="center"> <img src="https://img.shields.io/badge/React-18+-blue.svg" alt="React"/> <img src="https://img.shields.io/badge/Vite-4+-purple.svg" alt="Vite"/> <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/> <img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status"/> </p>
+
+📖 Descripción
+
+Encryptador es una aplicación web en React + Vite que permite encriptar y desencriptar información de manera local.
+Requiere obligatoriamente una clave de cifrado definida por el usuario, con la recomendación de que sea mayor a 10 caracteres.
 
 
+✨ Características
 
 
+🔒 Encriptación y desencriptación local.
 
 
+🔑 Clave de cifrado obligatoria y configurable.
 
 
-Encryptador es una aplicación en React + Vite que permite encriptar y desencriptar información de manera local.
-Funciona en un servidor local y requiere una clave de cifrado obligatoria que el usuario puede definir y cambiar.
+⚡ Ejecución rápida con Vite.
 
-✨ Funcionalidades
 
-Interfaz en React moderna y responsiva.
+🎨 Interfaz moderna con React.
 
-Encriptación y desencriptación local.
 
-Clave de cifrado obligatoria (se recomienda mínimo 10 caracteres).
+📂 Estructura del proyecto
 
-Ejecución en http://localhost:5173.
-
-📂 Estructura
 📦Encryptador
+
  ┣ 📜start_app.bat          # Script de inicio
+ 
  ┣ 📜requirements.txt       # Dependencias
+ 
  ┣ 📂src
+ 
  ┃ ┣ 📜main.jsx             # Entry point
+ 
  ┃ ┣ 📜App.jsx              # Componente raíz
- ┃ ┣ 📂components           # UI Components
+ 
+ ┃ ┣ 📂components
+ 
  ┃ ┃ ┣ 📜Header.jsx
+ 
  ┃ ┃ ┣ 📜InputSection.jsx
+ 
  ┃ ┃ ┣ 📜OutputSection.jsx
+ 
  ┃ ┃ ┗ 📜Footer.jsx
+ 
  ┃ ┣ 📂utils
+ 
  ┃ ┃ ┗ 📜encryption.js      # Lógica de cifrado
+ 
  ┣ 📂public
+ 
  ┗ 📂node_modules
 
-⚙️ Requisitos
 
-Node.js 18+
+⚙️ Tecnologías
+Tecnología	Uso
+React 18+	Frontend
+Vite 4+	Bundler / Dev server
+Node.js 18+	Entorno de ejecución
+JavaScript	Lógica de cifrado
 
-npm o yarn
 
-▶️ Uso
+▶️ Instalación y uso
+
 git clone https://github.com/tuusuario/Encryptador.git
+
 cd Encryptador
+
 npm install   # o yarn install
+
 start_app.bat
 
 
@@ -55,9 +79,9 @@ Abrir en navegador:
 http://localhost:5173
 
 
-⚠️ Al ingresar, deberás establecer una clave de cifrado.
+⚠️ Al ingresar deberás establecer una clave de cifrado.
 
-📌 Nota
+⚠️ Nota
 
-Este proyecto es de carácter educativo y experimental.
-La seguridad depende directamente de la fortaleza de la clave de cifrado.
+Este proyecto tiene fines educativos y experimentales.
+La seguridad de la información dependerá directamente de la robustez de la clave definida por el usuario.
