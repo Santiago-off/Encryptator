@@ -1,87 +1,118 @@
-🔐 Encryptador
-<p align="center"> <img src="https://img.shields.io/badge/React-18+-blue.svg" alt="React"/> <img src="https://img.shields.io/badge/Vite-4+-purple.svg" alt="Vite"/> <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/> <img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status"/> </p>
+# Encryptator
 
-📖 Descripción
+Implementación desde cero del **cifrado de Vigenère**, con una interfaz para cifrar y descifrar
+texto. Todo ocurre en el navegador: no hay servidor, ni petición de red, ni nada que salga del
+equipo.
 
-Encryptador es una aplicación web en React + Vite que permite encriptar y desencriptar información de manera local.
-Requiere obligatoriamente una clave de cifrado definida por el usuario, con la recomendación de que sea mayor a 10 caracteres.
+React 19 · Vite 7 · sin más dependencias que React
 
+<img alt="Flujo del algoritmo: texto y clave entran, se validan, generan un flujo de clave repetido y se suman o restan en módulo 27 para producir el resultado" src="docs/algoritmo-oscuro.png">
 
-✨ Características
+> Diagrama generado con [Archify](https://github.com/tt-a1i/archify) a partir del código de este
+> repositorio. Especificación en [`docs/algoritmo.dataflow.json`](docs/algoritmo.dataflow.json);
+> versión navegable en [`docs/algoritmo.html`](docs/algoritmo.html).
 
+---
 
-🔒 Encriptación y desencriptación local.
+## Cómo funciona
 
+El cifrado César desplaza todas las letras la misma cantidad, y por eso se rompe probando 26
+posibilidades. Vigenère resuelve eso usando **una clave que cambia el desplazamiento en cada
+posición**.
 
-🔑 Clave de cifrado obligatoria y configurable.
+La clave se repite cíclicamente hasta cubrir el texto:
 
+```
+texto  →  h o l a   m u n d o
+clave  →  k e y k e y k e y k
+```
 
-⚡ Ejecución rápida con Vite.
+Y cada símbolo avanza tantas posiciones como indique la letra de clave que le toca. La consecuencia
+importante es que **la misma letra clara no produce siempre la misma letra cifrada**: la primera
+`o` de «hola» y la segunda de «mundo» salen distintas. Eso es lo que anula el análisis de
+frecuencias, que es la forma habitual de romper un cifrado por sustitución.
 
+### El alfabeto tiene 27 símbolos
 
-🎨 Interfaz moderna con React.
+```js
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz ';
+```
 
+El espacio está dentro a propósito. En la versión clásica de Vigenère los espacios se dejan tal
+cual, y eso enseña dónde empieza y acaba cada palabra — que es media pista regalada. Aquí el
+espacio se cifra como un símbolo más, así que el resultado no revela la longitud de las palabras.
 
-📂 Estructura del proyecto
+### El flujo de clave
 
-📦Encryptador
+```js
+const generateKeyStream = (text, key) => {
+  let keyStream = '';
+  let keyIndex = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (ALPHABET.includes(text[i])) {
+      keyStream += key[keyIndex % key.length];
+      keyIndex++;
+    } else {
+      keyStream += ' ';
+    }
+  }
+  return keyStream;
+};
+```
 
- ┣ 📜start_app.bat          # Script de inicio
- 
- ┣ 📜requirements.txt       # Dependencias
- 
- ┣ 📂src
- 
- ┃ ┣ 📜main.jsx             # Entry point
- 
- ┃ ┣ 📜App.jsx              # Componente raíz
- 
- ┃ ┣ 📂components
- 
- ┃ ┃ ┣ 📜Header.jsx
- 
- ┃ ┃ ┣ 📜InputSection.jsx
- 
- ┃ ┃ ┣ 📜OutputSection.jsx
- 
- ┃ ┃ ┗ 📜Footer.jsx
- 
- ┃ ┣ 📂utils
- 
- ┃ ┃ ┗ 📜encryption.js      # Lógica de cifrado
- 
- ┣ 📂public
- 
- ┗ 📂node_modules
+El detalle está en el `keyIndex` separado del índice del bucle: la clave **solo avanza cuando el
+carácter pertenece al alfabeto**. Si el texto trae algo que no se cifra, ese carácter se copia
+igual y no consume una letra de clave, de modo que el descifrado vuelve a alinearse solo.
 
+### Cifrar y descifrar
 
-⚙️ Tecnologías
-Tecnología	Uso
-React 18+	Frontend
-Vite 4+	Bundler / Dev server
-Node.js 18+	Entorno de ejecución
-JavaScript	Lógica de cifrado
+Son la misma operación en sentidos opuestos, en módulo 27:
 
+```js
+const newIndex = (textIndex + keyIndex) % ALPHABET.length;   // cifrar
+```
 
-▶️ Instalación y uso
+```js
+let newIndex = (textIndex - keyIndex);            // descifrar
+if (newIndex < 0) {
+  newIndex += ALPHABET.length;
+}
+```
 
-git clone https://github.com/Santiago-off/Encryptator.git
+La corrección del negativo hace falta porque el `%` de JavaScript conserva el signo del dividendo:
+`-3 % 27` da `-3`, no `24`.
 
-cd Encryptador
+## Contexto histórico
 
-npm install   # o yarn install
+Blaise de Vigenère lo describió en 1586. Durante casi tres siglos se le llamó *le chiffre
+indéchiffrable*, hasta que **Friedrich Kasiski publicó en 1863** el método que lo rompe: buscar
+secuencias repetidas en el texto cifrado, medir las distancias entre ellas y deducir de sus
+divisores comunes la longitud de la clave. Sabiendo esa longitud, el texto se parte en tantos
+cifrados César como letras tenga la clave, y cada uno cae por frecuencias.
 
-start_app.bat
+Es un cifrado histórico y así hay que entenderlo: la criptografía moderna usa AES o ChaCha20, y en
+el navegador se accede a ellos por la Web Crypto API. Este proyecto está hecho para entender cómo
+funciona una clave que se repite, no para guardar secretos.
 
+## Estructura
 
-Abrir en navegador:
+```
+src/
+├── App.jsx                      estado y orquestación
+├── utils/encryption.js          el algoritmo completo
+└── components/
+    ├── Header.jsx
+    ├── InputSection.jsx         texto, clave y validación
+    ├── OutputSection.jsx        resultado y copiado
+    └── Footer.jsx
+```
 
-http://localhost:5173
+## Puesta en marcha
 
+```bash
+npm install
+npm run dev
+```
 
-⚠️ Al ingresar deberás establecer una clave de cifrado.
-
-⚠️ Nota
-
-Este proyecto tiene fines educativos y experimentales.
-La seguridad de la información dependerá directamente de la robustez de la clave definida por el usuario.
+La clave admite solo letras minúsculas sin espacios ni acentos, y el texto a cifrar solo letras
+minúsculas y espacios. Ambas restricciones se comprueban antes de operar.

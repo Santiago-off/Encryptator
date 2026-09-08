@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Cifrado de Vigenère",
+    "output": "algoritmo.html",
+    "viewBox": [
+      1068,
+      520
+    ],
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "clave",
+        "label": "Flujo de clave",
+        "focus": [
+          "clave",
+          "valida",
+          "flujo"
+        ],
+        "note": "La clave se repite hasta cubrir todo el texto, de modo que cada letra se desplaza una cantidad distinta."
+      },
+      {
+        "id": "cifrar",
+        "label": "Cifrar",
+        "focus": [
+          "texto",
+          "flujo",
+          "suma",
+          "salida"
+        ],
+        "note": "Cada símbolo avanza en el alfabeto tantas posiciones como indique su letra de clave."
+      },
+      {
+        "id": "descifrar",
+        "label": "Descifrar",
+        "focus": [
+          "flujo",
+          "resta",
+          "salida"
+        ],
+        "note": "Descifrar es la misma operación al revés: se resta y se corrige el índice si queda negativo."
+      }
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "emphasis": {
+          "label": "camino de cifrado"
+        },
+        "security": {
+          "label": "clave secreta"
+        },
+        "dashed": {
+          "label": "camino de descifrado"
+        },
+        "database": {
+          "label": "resultado"
+        }
+      }
+    }
+  },
+  "stages": [
+    {
+      "label": "Entrada"
+    },
+    {
+      "label": "Validación"
+    },
+    {
+      "label": "Clave"
+    },
+    {
+      "label": "Transformación"
+    },
+    {
+      "label": "Salida"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "texto",
+      "type": "frontend",
+      "label": "Texto",
+      "sublabel": "entrada",
+      "stage": 0,
+      "row": 0
+    },
+    {
+      "id": "clave",
+      "type": "security",
+      "label": "Clave",
+      "sublabel": "minúsculas",
+      "stage": 0,
+      "row": 2,
+      "tag": "secreta"
+    },
+    {
+      "id": "valida",
+      "type": "security",
+      "label": "Validación",
+      "sublabel": "regex",
+      "stage": 1,
+      "row": 1,
+      "tag": "a-z y espacio"
+    },
+    {
+      "id": "flujo",
+      "type": "backend",
+      "label": "Flujo de clave",
+      "sublabel": "keyStream",
+      "stage": 2,
+      "row": 1,
+      "tag": "se repite"
+    },
+    {
+      "id": "suma",
+      "type": "backend",
+      "label": "Cifrar",
+      "sublabel": "suma",
+      "stage": 3,
+      "row": 0,
+      "tag": "mod 27"
+    },
+    {
+      "id": "resta",
+      "type": "backend",
+      "label": "Descifrar",
+      "sublabel": "resta",
+      "stage": 3,
+      "row": 2,
+      "tag": "mod 27"
+    },
+    {
+      "id": "salida",
+      "type": "database",
+      "label": "Resultado",
+      "sublabel": "27 símbolos",
+      "stage": 4,
+      "row": 1
+    }
+  ],
+  "flows": [
+    {
+      "id": "f-texto",
+      "from": "texto",
+      "to": "valida",
+      "label": "texto",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-clave",
+      "from": "clave",
+      "to": "valida",
+      "label": "clave",
+      "classification": "secreta",
+      "variant": "security"
+    },
+    {
+      "id": "f-ok",
+      "from": "valida",
+      "to": "flujo",
+      "label": "aceptado",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-suma",
+      "from": "flujo",
+      "to": "suma",
+      "variant": "emphasis",
+      "label": "desplazamiento"
+    },
+    {
+      "id": "f-resta",
+      "from": "flujo",
+      "to": "resta",
+      "variant": "dashed",
+      "label": "mismo desplaz."
+    },
+    {
+      "id": "f-cif",
+      "from": "suma",
+      "to": "salida",
+      "label": "cifrado",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-des",
+      "from": "resta",
+      "to": "salida",
+      "label": "descifrado",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "El alfabeto",
+      "items": [
+        "27 símbolos: las 26 letras más el espacio",
+        "El espacio también se cifra, así que no se ven las palabras",
+        "Lo que no pertenece al alfabeto se deja intacto"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "La clave",
+      "items": [
+        "Se repite cíclicamente hasta cubrir el texto",
+        "Cada posición recibe un desplazamiento distinto",
+        "La misma letra clara no produce siempre la misma cifrada"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Contexto",
+      "items": [
+        "Cifrado descrito por Vigenère en 1586",
+        "Llamado le chiffre indéchiffrable durante tres siglos",
+        "Roto por Kasiski en 1863 analizando repeticiones"
+      ]
+    }
+  ]
+}
